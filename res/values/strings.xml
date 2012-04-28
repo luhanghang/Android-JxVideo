@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JxVideo</string>
+    <string name="prefrences">设置</string>
+    <string name="gatewayPrefTitle">连接设置</string>
+    <string name="gatewayPrefDesc">设置将要连接的网关地址</string>
+    <string name="gatewayPrefExample">例: http://124.206.31.63或http://124.206.31.63:8080</string>
+    <string name="gatewayPrefDefault">http://网关地址:端口</string>
+    <string name="list">监控点列表</string>
+    <string name="monitor">监控</string>
+    <string name="errorToConnectHost">无法连接至</string>
+    <string name="close">关闭</string>
+    <string name="connectToGateway">Connecting to Remote Gateway ...</string>
+</resources>

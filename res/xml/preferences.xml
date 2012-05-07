@@ -2,9 +2,30 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-            android:key="setup"
-            android:hint="@string/gatewayPrefExample"
-            android:title="@string/gatewayPrefTitle"
-            android:defaultValue="@string/gatewayPrefDefault" 
-            android:summary="@string/gatewayPrefDesc"/>
+            android:key="gateway"
+            android:title="@string/gatewayPrefTitle"/>
+    <ListPreference
+            android:key="bitrate"
+            android:title="@string/bitrate"
+            android:defaultValue="300"
+            android:entries="@array/bitrateArray"
+            android:entryValues="@array/bitrateArray"/>
+    <ListPreference
+            android:key="framerate"
+            android:title="@string/frameRate"
+            android:defaultValue="15"
+            android:entries="@array/frArray"
+            android:entryValues="@array/frArray"/>
+    <ListPreference
+            android:key="gop"
+            android:title="@string/gop"
+            android:defaultValue="25"
+            android:entries="@array/gopArray"
+            android:entryValues="@array/gopArray"/>
+    <ListPreference
+            android:key="audioDecoder"
+            android:title="@string/audioDecoder"
+            android:defaultValue="0"
+            android:entries="@array/audioDecoderArray"
+            android:entryValues="@array/audioDecoderValueArray"/>
 </PreferenceScreen>

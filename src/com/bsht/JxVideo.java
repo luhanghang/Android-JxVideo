@@ -64,8 +64,8 @@ public class JxVideo extends Activity
     private DatagramSocket clientSocket;
     private InetAddress ipaddress;
 
-    private boolean videoOn = true;
-    private boolean audioOn = true;
+    private boolean videoOn = false;
+    private boolean audioOn = false;
 
     private int video_frame_seq = 0;
     private int audio_frame_seq = 0;
@@ -218,8 +218,8 @@ public class JxVideo extends Activity
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        videoOn = false;
-        audioOn = false;
+        //videoOn = false;
+        //audioOn = false;
         mPreviewRunning = false;
 
         if (timer != null) {
@@ -294,6 +294,11 @@ public class JxVideo extends Activity
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, TOGGLE_VIDEO, Menu.NONE, getString(R.string.videoOff));
         menu.add(Menu.NONE, TOGGLE_AUDIO, Menu.NONE, getString(R.string.audioOff));
@@ -344,7 +349,7 @@ public class JxVideo extends Activity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         gateway = prefs.getString("gateway", "");
         bitRate = Integer.parseInt(prefs.getString("bitrate", "300")) * 1000;
-        frameRate = Integer.parseInt(prefs.getString("framerate", "20"));
+        frameRate = Integer.parseInt(prefs.getString("framerate", "8"));
         gop = Integer.parseInt(prefs.getString("gop", "50"));
         audio_decoder = Integer.parseInt(prefs.getString("audioDecoder", "0"));
     }

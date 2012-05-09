@@ -13,13 +13,13 @@
     <ListPreference
             android:key="framerate"
             android:title="@string/frameRate"
-            android:defaultValue="15"
+            android:defaultValue="8"
             android:entries="@array/frArray"
             android:entryValues="@array/frArray"/>
     <ListPreference
             android:key="gop"
             android:title="@string/gop"
-            android:defaultValue="25"
+            android:defaultValue="50"
             android:entries="@array/gopArray"
             android:entryValues="@array/gopArray"/>
     <ListPreference

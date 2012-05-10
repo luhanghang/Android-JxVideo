@@ -191,8 +191,8 @@ public class JxVideo extends Activity
     private void sendAudio() {
         if (recordInstance == null) return;
         int audioBufferRead = recordInstance.read(tempBuffer, 0, bufferSize);
-//        log("audioBufferRead:" + audioBufferRead);
-//        log("bufferSize:" + bufferSize);
+        log("audioBufferRead:" + audioBufferRead);
+        log("bufferSize:" + bufferSize);
 
         Frame_Header.frame_seq = audio_frame_seq++;
         Frame_Header.size = (short) audioBufferRead;
@@ -214,7 +214,7 @@ public class JxVideo extends Activity
     }
 
     public void log(Object msg) {
-        //Log.e("JxVideo", msg + "");
+        Log.e("JxVideo", msg + "");
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {

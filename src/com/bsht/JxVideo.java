@@ -64,8 +64,8 @@ public class JxVideo extends Activity
     private DatagramSocket clientSocket;
     private InetAddress ipaddress;
 
-    private boolean videoOn = false;
-    private boolean audioOn = false;
+    private boolean videoOn = true;
+    private boolean audioOn = true;
 
     private int video_frame_seq = 0;
     private int audio_frame_seq = 0;
@@ -145,6 +145,8 @@ public class JxVideo extends Activity
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
+        videoOn = true;
+        audioOn = true;
         log("surfaceCreated");
         readPreference();
         log("Gateway is:" + gateway);
@@ -184,6 +186,7 @@ public class JxVideo extends Activity
 
     private void startAudio() {
         recordInstance = new AudioRecord(MediaRecorder.AudioSource.MIC, FREQUENCIES[AUDIO_DECODER_G711], CHANNELS[AUDIO_DECODER_G711], AUDIO_ENCODING, bufferSize);
+        //Log.e("JxVde", recordInstance.getState() + "");
         recordInstance.startRecording();
         tempBuffer = new short[bufferSize];
     }
@@ -191,8 +194,8 @@ public class JxVideo extends Activity
     private void sendAudio() {
         if (recordInstance == null) return;
         int audioBufferRead = recordInstance.read(tempBuffer, 0, bufferSize);
-        log("audioBufferRead:" + audioBufferRead);
-        log("bufferSize:" + bufferSize);
+//        log("audioBufferRead:" + audioBufferRead);
+//        log("bufferSize:" + bufferSize);
 
         Frame_Header.frame_seq = audio_frame_seq++;
         Frame_Header.size = (short) audioBufferRead;
@@ -214,12 +217,12 @@ public class JxVideo extends Activity
     }
 
     public void log(Object msg) {
-        Log.e("JxVideo", msg + "");
+        //Log.e("JxVideo", msg + "");
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        //videoOn = false;
-        //audioOn = false;
+        videoOn = false;
+        audioOn = false;
         mPreviewRunning = false;
 
         if (timer != null) {
@@ -294,11 +297,6 @@ public class JxVideo extends Activity
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, TOGGLE_VIDEO, Menu.NONE, getString(R.string.videoOff));
         menu.add(Menu.NONE, TOGGLE_AUDIO, Menu.NONE, getString(R.string.audioOff));
@@ -351,7 +349,7 @@ public class JxVideo extends Activity
         bitRate = Integer.parseInt(prefs.getString("bitrate", "300")) * 1000;
         frameRate = Integer.parseInt(prefs.getString("framerate", "8"));
         gop = Integer.parseInt(prefs.getString("gop", "50"));
-        audio_decoder = Integer.parseInt(prefs.getString("audioDecoder", "0"));
+        audio_decoder = Integer.parseInt(prefs.getString("audioDecoder", "1"));
     }
 
     private void register() throws Exception {

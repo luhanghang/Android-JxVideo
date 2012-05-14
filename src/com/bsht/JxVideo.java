@@ -46,6 +46,7 @@ public class JxVideo extends Activity
     private final static int SHOWUUID = 4;
     private final static int UDP_PORT = 8001;
     private final static int TCP_PORT = 8001;
+    private final static int MIN_AUDIO_PACK_SIZE = 1600;
     private final static int AUDIO_RECEIVE_UDP_LISTEN_PORT = 8000;
 
     private final static int AUDIO_DECODER_G711 = 0;
@@ -155,6 +156,7 @@ public class JxVideo extends Activity
         int audioPlayBufferSize;
         log("audio_decoder:" + audio_decoder);
         bufferSize = AudioRecord.getMinBufferSize(FREQUENCIES[AUDIO_DECODER_G711], CHANNELS[AUDIO_DECODER_G711], AUDIO_ENCODING);
+        if(bufferSize < MIN_AUDIO_PACK_SIZE) bufferSize = MIN_AUDIO_PACK_SIZE;
         audioPlayBufferSize = AudioTrack.getMinBufferSize(FREQUENCIES[audio_decoder], CHANNELS[audio_decoder], AUDIO_ENCODING);
         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, FREQUENCIES[audio_decoder], CHANNELS[audio_decoder], AUDIO_ENCODING, audioPlayBufferSize, AudioTrack.MODE_STREAM);
 

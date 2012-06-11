@@ -14,7 +14,6 @@ import android.media.*;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.*;
 
 import com.bsht.jxvideo.G711;
@@ -25,7 +24,6 @@ import com.bsht.net.TCPClient;
 import com.bsht.net.UDPServer;
 
 import java.net.*;
-import java.util.Enumeration;
 import java.util.Timer;
 
 public class JxVideo extends Activity
@@ -48,10 +46,11 @@ public class JxVideo extends Activity
     private final static int TCP_PORT = 8001;
     private final static int MIN_AUDIO_PACK_SIZE = 1600;
     private final static int AUDIO_RECEIVE_UDP_LISTEN_PORT = 8000;
-
+    private final static boolean NEEDREGNO = true;
     private final static int AUDIO_DECODER_G711 = 0;
     //private final static int AUDIO_DECODER_MPEG2 = 1;
 
+    private String reg_no;
     private int audio_decoder = 0;
     private Camera mCamera;
     private boolean mPreviewRunning = false;
@@ -87,6 +86,7 @@ public class JxVideo extends Activity
     private int lastKeepAlive = 0;
     private Timer timer;
     private AudioTrack audioTrack;
+    private SurfaceView mSurfaceView;
 
     /**
      * Called when the activity is first created.
@@ -99,11 +99,20 @@ public class JxVideo extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.main);
+        if (compare_reg_no()) {
+            start();
+        } else {
+            startActivityForResult(new Intent(this, JxVideoPreferences.class), 0);
+        }
+    }
 
-        SurfaceView mSurfaceView = (SurfaceView) this.findViewById(R.id.surface_camera);
-        SurfaceHolder mSurfaceHolder = mSurfaceView.getHolder();
-        mSurfaceHolder.addCallback(this);
-        mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    private void start() {
+        if (mSurfaceView == null) {
+            mSurfaceView = (SurfaceView) this.findViewById(R.id.surface_camera);
+            SurfaceHolder mSurfaceHolder = mSurfaceView.getHolder();
+            mSurfaceHolder.addCallback(this);
+            mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        }
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -156,7 +165,7 @@ public class JxVideo extends Activity
         int audioPlayBufferSize;
         log("audio_decoder:" + audio_decoder);
         bufferSize = AudioRecord.getMinBufferSize(FREQUENCIES[AUDIO_DECODER_G711], CHANNELS[AUDIO_DECODER_G711], AUDIO_ENCODING);
-        if(bufferSize < MIN_AUDIO_PACK_SIZE) bufferSize = MIN_AUDIO_PACK_SIZE;
+        if (bufferSize < MIN_AUDIO_PACK_SIZE) bufferSize = MIN_AUDIO_PACK_SIZE;
         audioPlayBufferSize = AudioTrack.getMinBufferSize(FREQUENCIES[audio_decoder], CHANNELS[audio_decoder], AUDIO_ENCODING);
         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, FREQUENCIES[audio_decoder], CHANNELS[audio_decoder], AUDIO_ENCODING, audioPlayBufferSize, AudioTrack.MODE_STREAM);
 
@@ -308,6 +317,25 @@ public class JxVideo extends Activity
         return (super.onCreateOptionsMenu(menu));
     }
 
+    private String gen_reg_no() {
+        String uuid = getUUID();
+        StringBuffer reg_no = new StringBuffer(uuid.toUpperCase());
+        for (int i = 0; i < uuid.length(); i++) {
+            reg_no.append(Utils.getMD5(reg_no.toString().getBytes()).toUpperCase());
+        }
+        String result = reg_no.toString();
+        for (int i = 0; i < uuid.length(); i++) {
+            result = Utils.getMD5(result.getBytes()).toUpperCase().substring(uuid.length(), uuid.length() + 10);
+        }
+        return result;
+    }
+
+    private boolean compare_reg_no() {
+        if (!NEEDREGNO) return true;
+        readPreference();
+        return reg_no.trim().toUpperCase().equals(gen_reg_no().toUpperCase());
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -318,7 +346,7 @@ public class JxVideo extends Activity
                 this.audioOn = !this.audioOn;
                 break;
             case PREFERENCES:
-                startActivity(new Intent(this, JxVideoPreferences.class));
+                startActivityForResult(new Intent(this, JxVideoPreferences.class),0);
                 break;
             case SHOWUUID:
                 Dialog dialog = new AlertDialog.Builder(this)
@@ -352,6 +380,7 @@ public class JxVideo extends Activity
         frameRate = Integer.parseInt(prefs.getString("framerate", "8"));
         gop = Integer.parseInt(prefs.getString("gop", "50"));
         audio_decoder = Integer.parseInt(prefs.getString("audioDecoder", "1"));
+        reg_no = prefs.getString("regNo", "");
     }
 
     private void register() throws Exception {
@@ -436,9 +465,18 @@ public class JxVideo extends Activity
     private String getUUID() {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
-        //return "2234567890abcde";
+        //return "9234567890abcde";
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (compare_reg_no()) {
+            start();
+        } else {
+            startActivityForResult(new Intent(this, JxVideoPreferences.class), 0);
+        }
+    }
+/*
     private void getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
@@ -455,5 +493,5 @@ public class JxVideo extends Activity
         } catch (SocketException ex) {
             Log.e("WifiPreference IpAddress", ex.toString());
         }
-    }
+    } */
 }

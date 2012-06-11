@@ -28,4 +28,7 @@
             android:defaultValue="1"
             android:entries="@array/audioDecoderArray"
             android:entryValues="@array/audioDecoderValueArray"/>
+    <EditTextPreference
+            android:key="regNo"
+            android:title="@string/regNo"/>
 </PreferenceScreen>

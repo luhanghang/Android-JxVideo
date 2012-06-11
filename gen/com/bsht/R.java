@@ -40,7 +40,8 @@ public final class R {
         public static final int gatewayPrefTitle=0x7f050002;
         public static final int gop=0x7f050006;
         public static final int preferences=0x7f050001;
-        public static final int showUUID=0x7f05000f;
+        public static final int regNo=0x7f05000f;
+        public static final int showUUID=0x7f050010;
         public static final int videoOff=0x7f05000a;
         public static final int videoOn=0x7f050009;
     }

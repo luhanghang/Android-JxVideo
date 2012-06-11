@@ -15,6 +15,7 @@
     <string name="audioOff">关语音</string>
     <string name="encodeRef">编码设置</string>
     <string name="audioDecoder">音频解码</string>
+    <string name="regNo">注册码</string>
     <string name="showUUID">显示UUID</string>
     <string-array name="audioDecoderArray">
         <item>G.711</item>

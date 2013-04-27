@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.view.*;
 
+import android.widget.Toast;
 import com.bsht.jxvideo.G711;
 import com.bsht.jxvideo.Jxaudio;
 import com.bsht.jxvideo.Jxcodec;
@@ -46,7 +47,7 @@ public class JxVideo extends Activity
     private final static int TCP_PORT = 8001;
     private final static int MIN_AUDIO_PACK_SIZE = 1600;
     private final static int AUDIO_RECEIVE_UDP_LISTEN_PORT = 8000;
-    private final static boolean NEEDREGNO = true;
+    private final static boolean NEEDREGNO = false;
     private final static int AUDIO_DECODER_G711 = 0;
     //private final static int AUDIO_DECODER_MPEG2 = 1;
 
@@ -289,6 +290,7 @@ public class JxVideo extends Activity
     }
 
     public void onPreviewFrame(byte[] data, Camera camera) {
+        if (!compare_reg_no()) return;
         if (Frame_Header.session_id == 0) return;
         if (audioOn)
             this.sendAudio();
@@ -346,7 +348,7 @@ public class JxVideo extends Activity
                 this.audioOn = !this.audioOn;
                 break;
             case PREFERENCES:
-                startActivityForResult(new Intent(this, JxVideoPreferences.class),0);
+                startActivityForResult(new Intent(this, JxVideoPreferences.class), 0);
                 break;
             case SHOWUUID:
                 Dialog dialog = new AlertDialog.Builder(this)
@@ -465,17 +467,38 @@ public class JxVideo extends Activity
     private String getUUID() {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
-        //return "9234567890abcde";
+        //return "98234567890abcde";
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (compare_reg_no()) {
-            start();
-        } else {
-            startActivityForResult(new Intent(this, JxVideoPreferences.class), 0);
-        }
+        //if (compare_reg_no()) {
+        start();
+        //} else {
+        //  startActivityForResult(new Intent(this, JxVideoPreferences.class), 0);
+        //}
     }
+
+    @Override
+    public void onBackPressed() {
+        //Toast.makeText(JxVideo.this, R.string.backConfirm, Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(this).setTitle(R.string.confirmExit)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        JxVideo.this.finish();
+                    }
+                })
+                .setNegativeButton(R.string.back, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+    }
+
 /*
     private void getLocalIpAddress() {
         try {

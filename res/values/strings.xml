@@ -17,6 +17,9 @@
     <string name="audioDecoder">音频解码</string>
     <string name="regNo">注册码</string>
     <string name="showUUID">显示UUID</string>
+    <string name="confirmExit">确定要退出程序?</string>
+    <string name="sure">确定</string>
+    <string name="back">返回</string>
     <string-array name="audioDecoderArray">
         <item>G.711</item>
         <item>MPEG-2</item>
